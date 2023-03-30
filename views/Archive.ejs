@@ -1,0 +1,69 @@
+<%- include('Header'); %>
+
+<h2 style="text-align: center">Archive</h2>
+
+<div id="image-container"  width="500" height="500"></div>
+
+<div id="myModal" class="modal">
+    <div class="row">
+        <div class="col-sm">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="img01">
+        </div>
+        <div class="col-sm">
+            <div id="caption"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var modal = document.getElementById("myModal");
+    var img = document.getElementById("myImg");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+
+    const container = document.getElementById("image-container");
+
+    const lablearray = JSON.parse('<%- JSON.stringify(LableArray) %>');
+    const data = JSON.parse('<%- JSON.stringify(ImageArray) %>');
+    console.log(lablearray)
+    console.log(data)
+
+    data.forEach((image) => {
+
+      
+
+        const imgElement = document.createElement("img");
+        imgElement.src = image.fileloc;
+        imgElement.width = "500";
+        imgElement.height = "500";
+
+        imgElement.addEventListener("click", () => {
+            var lables = [];
+            lablearray.forEach((lable) => {
+                if(lable.ImageName.includes(image.filename)){
+                    lables.push(lable.Lable + " " + lable.Confidence + "%" + '<br>' )
+                    console.log(lables)
+                }
+            });
+
+            modal.style.display = "block";
+            modalImg.src = "./ArchiveImage/Box"+ image.filename;
+            captionText.innerHTML = lables;
+
+          
+
+        })
+        container.appendChild(imgElement);
+
+    });
+
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function() { 
+        modal.style.display = "none";
+    }
+
+</script>
+
+<%- include('Footer'); %>

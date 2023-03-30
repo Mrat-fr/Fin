@@ -1,0 +1,78 @@
+<%- include('Header'); %>
+
+<div class="text">
+    <h2>A simple way </h2> 
+    <h3>to detect animals</h3>
+    <p>This project is to demonstrate the potential of ai and detection software.</p>
+
+    <button class="a" onclick="showOverlay()">Start</button>
+
+    <div class="uploadoverlay" id="uploadoverlay">
+        <span  onclick="hideOverlay()" class="closebtn" title="Close Overlay">&#215</span>
+        <div class="uploadoverlay-content">
+            <h2 style="top: -50px;">Upload Images</h2>
+            <p>Upload images of animals</p>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label class="custom-file-upload">
+                    <input id="fileinput" type="file" name="filetoupload" multiple="multiple" accept="image/jpeg, image/png, image/jpg" onchange="checkFiles()"/>
+                    Upload
+                </label>
+            
+                <div class="custom-file-upload" id="uploadButton">
+                    <button type="submit">
+                        Submit
+                    </button>
+                </div>
+            </form>
+            <output></output>
+        </div>
+    </div>
+
+      
+
+<script>
+    function showOverlay() {document.getElementById("uploadoverlay").style.display = "block";}
+    function hideOverlay() {document.getElementById("uploadoverlay").style.display = "none";}
+</script>
+
+<script>
+    const output = document.querySelector("output")
+    const input = document.querySelector("input")
+    const Submit = document.getElementById("uploadButton")
+    const fileval = document.querySelector("fileinput")
+
+    let imagesArray = []
+    input.addEventListener("change", () => {
+        const files = input.files
+
+        if(files.length > 0 && files.length <= 10){
+            Submit.style.display = "block";
+        }else{
+            Submit.style.display = "none";
+        }
+
+        for (let i = 0; i < files.length; i++) {
+        imagesArray.push(files[i])
+        }
+        displayImages()
+    })
+
+   
+
+    function displayImages() {
+        let images = ""
+        imagesArray.forEach((image, index) => {
+            images +=   `<div class="image" style="text-align:center;">
+                        <img src="${URL.createObjectURL(image)}" alt="image">
+                        <span onclick="deleteImage(${index})">&times;</span>
+                        </div>`
+        })
+        output.innerHTML = images
+    }
+
+    function deleteImage(index) {
+        imagesArray.splice(index, 1)
+        displayImages()
+    }
+</script>
+<%- include('Footer'); %>

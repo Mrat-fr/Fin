@@ -1,0 +1,26 @@
+       
+       </div>
+
+
+    </section>
+
+        <div class="menu">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Archive">Archive</a></li>
+                <li><a href="/clear">ClearData</a></li>
+
+            </ul>
+        </div>
+
+        <script>
+            const menuToggle = document.querySelector('.toggle');
+            const showcase = document.querySelector('.showcase');
+
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                showcase.classList.toggle('active');
+            })
+        </script>
+    </body>
+</html>
