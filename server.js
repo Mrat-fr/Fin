@@ -125,11 +125,6 @@ app.get("/Clear", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/About", (req, res) => { 
-  DeleteTemp();
-  res.render("About");
-});
-
 app.get("/Archive", (req, res) => { 
   DeleteTemp();
 
@@ -178,69 +173,93 @@ app.get("/Archive", (req, res) => {
 
 });
 
-var orgiinalfilelength = 0;
-app.post("/upload", upload.array("filetoupload") ,(req, res) => {
-    var files = ReadTemp();
-    orgiinalfilelength = files.length;
+app.get("/upload",upload.array("images"),(req, res) => {
+  res.render("Upload");
 
+});
+
+app.post("/upload",upload.array("images"),(req, res) => {
+  
+  var filessub = ReadTemp();
+  var files = ReadTemp();
+
+  filessub.forEach((file) => {
+    Filter.render(file.fileloc, sobel, function (result) {
+      var filname = "filter" + file.filename;
+      result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
+    });
+  });
+  
+  
     files.forEach((file) => {
-      Filter.render(file.fileloc, sobel, function (result) {
-        var filname = "Boxfilter" + file.filename;
-        result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
-      });
+      safeSearchDetection(file)
     });
 
     files.forEach((file) => {
       localizeObjects(file);
     });
   
-    // files.forEach((file) => {
-    //   safeSearchDetection(file)
-    // });
 
     files.forEach((file) => {
       labelDetection(file)
     });
 
-    res.render("Upload");
 });
 
-
-app.get("/Results", (req, res) => { 
-  var filesdif = ReadTemp();
-  var apifile = 0;
-  showfiles = [];
-  filesdif.forEach((file) => {
+app.get("/Filter",(req, res) => {
+  var files = ReadTemp();
+  files.forEach((file) => {
     fname = file.filename;
-    if (fname.includes("Box")){
-      showfiles.push(file.fileloc)
-      apifile++;
+    if (fname.includes("filter")){
+      labelDetection(file)
     }
   });
 
-  wrongfiles = Math.abs(apifile - orgiinalfilelength)
+  res.render("Filter");
 
-  var message = null;
-  if(wrongfiles != 0){
-    message = "There where "+wrongfiles+" Image that did not contain Animals";
-  }
+});
 
-  filesdif.forEach((file) => {
+app.get("/Results", (req, res) => { 
+  var files = ReadTemp();
+
+  showfiles = [];
+  files.forEach((file) => {
+    fname = file.filename;
+    if (!fname.includes("Box")){
+      if (!fname.includes("filter")){
+        showfiles.push(file)
+      }
+    }
+  });
+  
+  files.forEach((file) => {
     bname = "Box" + file.filename;
     fname = file.filename;
     if (!fname.includes("Box")){
-      const simage = fs.readFileSync(file.fileloc);
-      const simageBuffer = Buffer.from(simage, "binary");
-      const sobjectloc = './Temp/Box' + file.filename;
-      const simageo = fs.readFileSync(sobjectloc);
-      const simageBuffero = Buffer.from(simageo, "binary");
-      db.run("INSERT INTO Image (Image, ImageObject, ImageName) VALUES (?, ?, ?)",[simageBuffer,simageBuffero,file.filename],function (err) {
-        if (err){return console.log(err.message);}
-      });  
+      if (!fname.includes("filter")){
+        const simage = fs.readFileSync(file.fileloc);
+        const simageBuffer = Buffer.from(simage, "binary");
+        const sobjectloc = './Temp/Box' + file.filename;
+        const simageo = fs.readFileSync(sobjectloc);
+        const simageBuffero = Buffer.from(simageo, "binary");
+        db.run("INSERT INTO Image (Image, ImageObject, ImageName) VALUES (?, ?, ?)",[simageBuffer,simageBuffero,file.filename],function (err) {
+          if (err){return console.log(err.message);}
+        });  
+      }
     }
   });
 
-  res.render("Results", { Boximage: showfiles, errormes: message});
+  db.all("SELECT * FROM Label", (err, rows) => {
+    if (err) {console.error(err.message);}
+    var Lables = [];
+
+    rows.forEach(row => {
+      var Lay = {Lable: row.Label, Confidence: row.Confidence, ImageName: row.ImageName};
+      Lables.push(Lay);
+    });
+    res.render("Results", { images: showfiles, labels: Lables });
+  });
+  
 });
 
 //API------------------------------------------------------------------------------
@@ -341,7 +360,7 @@ async function safeSearchDetection(file) {
     fs.unlinkSync(file.fileloc)
     return;
   }
-  if(detections.adult == "VERY_LIKELY" || detections.medical == "VERY_LIKELY" || detections.spoof == "VERY_LIKELY" || detections.violence == "VERY_LIKELY" || detections.racy == "VERY_LIKELY" ){
+  if(detections.adult == "IKELY" || detections.medical == "IKELY" || detections.spoof == "IKELY" || detections.violence == "IKELY" || detections.racy == "IKELY" ){
     fs.unlinkSync(file.fileloc)
     return;
   }

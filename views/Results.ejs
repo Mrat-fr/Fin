@@ -1,14 +1,12 @@
 <%- include('Header'); %>
 
 <h2 style="text-align: center">Results</h2>
-<% if (errormes != null) { %>
-    <div class="alert alert-danger" role="alert">
-        <%= errormes%>
-    </div>
-<% } %>
 
-<% for (let i = 0; i < Boximage.length; i++) { %>
-    <img class="gallery-item" width="500" height="500" src="<%= Boximage[i] %>" alt="result"/>
+<% for (let i = 0; i < images.length; i++) { %>
+    <div class="tc-container">
+        <img class="" width="500" height="500" src="./Temp/<%= images[i].filename %>" alt="image"/>
+        <img class="" width="500" height="500" src="./Temp/Box<%= images[i].filename %>" alt="boxresult"/>
+    </div>
 <% } %>
 
 <%- include('Footer'); %>

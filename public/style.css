@@ -267,3 +267,23 @@ output .image span:hover {
 output .span--hidden{
   visibility: hidden;
 }
+
+/* result */
+
+.tc-container{
+  position: relative;
+}
+
+
+
+.top-img{
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform: all 0.2s ease;
+}
+
+.top-img:hover{
+  opacity: 1;
+}
