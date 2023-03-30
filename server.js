@@ -195,7 +195,7 @@ app.post("/upload", upload.array("filetoupload") ,(req, res) => {
 
     files.forEach((file) => {
       Filter.render(file.fileloc, sobel, function (result) {
-        var filname = "filter" + file.filename;
+        var filname = "Boxfilter" + file.filename;
         result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
       });
     });
@@ -204,7 +204,6 @@ app.post("/upload", upload.array("filetoupload") ,(req, res) => {
       localizeObjects(file);
     });
   
-  myAsyncFunction()
     files.forEach((file) => {
       safeSearchDetection(file)
     });
@@ -257,8 +256,11 @@ app.get("/Results", (req, res) => {
 //API------------------------------------------------------------------------------
 const vision = require("@google-cloud/vision");
 
-const client = new vision.ImageAnnotatorClient({ keyFilename: "key.json" });
-
+const client = new vision.ImageAnnotatorClient({
+  private_key: process.env.private_key,
+  client_email: process.env.client_email
+ });
+ 
 async function localizeObjects(file) {
   const request = { image: { content: fs.readFileSync(file.fileloc) } };
 
