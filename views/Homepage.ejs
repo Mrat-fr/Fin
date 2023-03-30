@@ -1,32 +1,41 @@
 <%- include('Header'); %>
 
-<div class="text">
-    <h2>A simple way </h2> 
-    <h3>to detect animals</h3>
-    <p>This project is to demonstrate the potential of ai and detection software.</p>
+<h2>A simple way </h2> 
+<h3>to detect animals</h3>
+<p>This project is to demonstrate the potential of ai and detection software.</p>
 
-    <button class="a" onclick="showOverlay()">Start</button>
+<button class="custom-file-upload" onclick="showOverlay()">Start</button>
 
-    <div class="uploadoverlay" id="uploadoverlay">
-        <span  onclick="hideOverlay()" class="closebtn" title="Close Overlay">&#215</span>
-        <div class="uploadoverlay-content">
-            <h2 style="top: -50px;">Upload Images</h2>
-            <p>Upload images of animals</p>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                <label class="custom-file-upload">
-                    <input id="fileinput" type="file" name="filetoupload" multiple="multiple" accept="image/jpeg, image/png, image/jpg" onchange="checkFiles()"/>
-                    Upload
-                </label>
-            
-                <div class="custom-file-upload" id="uploadButton">
-                    <button type="submit">
-                        Submit
-                    </button>
+<div class="uploadoverlay" id="uploadoverlay">
+    <span  onclick="hideOverlay()" class="closebtn" title="Close Overlay">&#215</span>
+    <div class="uploadoverlay-content">
+        <h2 >Upload Images</h2>
+        <p>Upload images of animals</p>
+
+        <form action="/upload" method="post" enctype="multipart/form-data" id="form">
+
+            <label class="custom-file-upload">
+                <input id="image" type="file"  onchange="image_select()" name="filetoupload" multiple="multiple" accept="image/jpeg, image/png, image/jpg"/>
+                Select
+            </label>
+
+            <label class="custom-file-upload">
+                <button type="submit"></button>
+                    Submit
+            </label>
+        </form>
+        <div class="container mt-3 w-100">
+            <div class="card showdow-sm w-100">
+
+                <div class="card-body d-flex felex wrap justify-content-start" id="container">
+                    
                 </div>
-            </form>
-            <output></output>
+            </div>
+
         </div>
+
     </div>
+</div>
 
       
 
@@ -36,43 +45,51 @@
 </script>
 
 <script>
-    const output = document.querySelector("output")
-    const input = document.querySelector("input")
-    const Submit = document.getElementById("uploadButton")
-    const fileval = document.querySelector("fileinput")
-
-    let imagesArray = []
-    input.addEventListener("change", () => {
-        const files = input.files
-
-        if(files.length > 0 && files.length <= 10){
-            Submit.style.display = "block";
-        }else{
-            Submit.style.display = "none";
+    var images = [];
+    function image_select(){
+        var image = document.getElementById('image').files;
+        for (i=0; i < image.length; i++){
+            if(check_duplicate(image[i].name)){
+                images.push({
+                    "name" : image[i].name,
+                    "url" : URL.createObjectURL(image[i]),
+                    "file" : image[i],
+                })
+            }else{
+                alert(image[i].name + " is already in the list")
+            }
         }
-
-        for (let i = 0; i < files.length; i++) {
-        imagesArray.push(files[i])
-        }
-        displayImages()
-    })
-
-   
-
-    function displayImages() {
-        let images = ""
-        imagesArray.forEach((image, index) => {
-            images +=   `<div class="image" style="text-align:center;">
-                        <img src="${URL.createObjectURL(image)}" alt="image">
-                        <span onclick="deleteImage(${index})">&times;</span>
-                        </div>`
-        })
-        output.innerHTML = images
+        document.getElementById('form').reset();
+        document.getElementById('container').innerHTML = image_show();
     }
 
-    function deleteImage(index) {
-        imagesArray.splice(index, 1)
-        displayImages()
+    function image_show(){
+        var image = "";
+        images.forEach((i) => {
+            image += `<div class="image_container d-flex justify-content-center position-relative">
+                      <img src="`+ i.url+`" alt="Image">
+                      <span class="position-absolute" onlick="delete_image(`+ images.indexOf(i)+`)">&times</span>
+                      </div>`;
+        })
+        return image;
+    }
+
+    function delete_image(e) {
+        image.splice(e,1);
+        document.getElementById('container').innerHTML = image_show();
+    }
+
+    function check_duplicate(name){
+        var image = true;
+        if (image.length > 0){
+            for(e=0; e< Images.length; e++){
+                if (image[e].name == name){
+                    image = false;
+                    break
+                }
+            }
+        }
+        return image;
     }
 </script>
 <%- include('Footer'); %>

@@ -1,0 +1,57 @@
+<%- include('Header'); %>
+
+    <h2 >Upload Images</h2>
+    <p>Upload images of animals</p>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+
+        <label class="custom-file-upload">
+            <input id="fileinput" type="file" onchange="checkFiles()" name="filetoupload" multiple="multiple" accept="image/jpeg, image/png, image/jpg"/>
+            Select
+        </label>
+
+        <label class="custom-file-upload" id="uploadButton">
+            <button type="submit"></button>
+            Submit
+        </label>
+
+    </form>
+
+    <br>
+        <div class="card showdow-sm w-100">
+            <output></output>
+        </div>
+
+
+
+<script>
+    const output = document.querySelector("output")
+    const input = document.querySelector("input")
+    const Submit = document.getElementById("uploadButton")
+    const fileval = document.querySelector("fileinput")
+    
+    let imagesArray = []
+    input.addEventListener("change", () => {
+        const files = input.files
+        for (let i = 0; i < files.length; i++) {
+        imagesArray.push(files[i])
+        }
+        displayImages()
+    })
+   
+    function displayImages() {
+        let images = ""
+        imagesArray.forEach((image, index) => {
+            images +=   `<div class="image" style="text-align:center;">
+                        <img src="${URL.createObjectURL(image)}" alt="image">
+                        <span onclick="deleteImage(${index})">&times;</span>
+                        </div>`
+        })
+        output.innerHTML = images
+    }
+    function deleteImage(index) {
+        imagesArray.splice(index, 1)
+        displayImages()
+    }
+</script>
+<%- include('Footer'); %>

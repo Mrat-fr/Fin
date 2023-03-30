@@ -1,13 +1,13 @@
 <%- include('Header'); %>
-<div class="text">
 
-    <h2>File uploaded successfully</h2>
+<h2>File uploaded successfully</h2>
 
-    <div style="text-align: center">
-        <form action="/Results">
-            <input type="submit" class="btn btn-primary" value="See Results" />
-        </form>
-    </div>
+    <form action="/Results">
+        <label class="custom-file-upload">
+            <button type="submit"></button>
+            See Results
+        </label>
+    </form>
 </div>
 
 <%- include('Footer'); %>

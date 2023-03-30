@@ -113,24 +113,7 @@ header .logo
   font-weight: 400;
   max-width: 700px;
 }
-.a
-{
-  display: inline-block;
-  font-size: 1em;
-  background: #fff;
-  padding: 10px 30px;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-weight: 500;
-  margin-top: 10px;
-  color: #111;
-  letter-spacing: 2px;
-  transition: 0.2s;
-}
-.a:hover
-{
-  letter-spacing: 6px;
-}
+
 
 .menu
 {
@@ -217,23 +200,31 @@ input[type="file"]{
   display: none;
 }
 
+button{
+  display: none;
+}
+
 .custom-file-upload{
-  color: black;
-  height: 60px;
-  width: 200px;
-  background-color: white;
-  border-radius: 25px;
-  margin: auto;
-  left: 0;
-  right: 0;
-  font-size: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
+  font-size: 1em;
+  background: #fff;
+  padding: 10px 30px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 10px;
+  color: #111;
+  letter-spacing: 2px;
+  transition: 0.2s;
+
 }
 
 .custom-file-upload:hover{
-  
+  cursor: pointer;
+  transform: scale(1.09);
+  background: #ececec;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+
 }
 /* image preview */
 output{

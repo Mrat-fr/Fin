@@ -113,12 +113,12 @@ app.get("/", (req, res) => {
     res.render("Homepage");
 });
 
-app.get("/test", (req, res) => { 
+app.get("/Test", (req, res) => { 
   DeleteTemp();
   res.render("testpage");
 });
 
-app.get("/clear", (req, res) => { 
+app.get("/Clear", (req, res) => { 
   DeleteInfo();
   DeleteTemp();
   DeleteArchive();
@@ -142,8 +142,6 @@ app.get("/Archive", (req, res) => {
     }
   });
 
-  
-
   db.all("SELECT * FROM Image", (err, rows) => {
     if (err) {console.error(err.message);}
 
@@ -159,9 +157,6 @@ app.get("/Archive", (req, res) => {
   });
 
   Images = [];
-
-  
-
 
   db.all("SELECT * FROM Label", (err, rows) => {
     if (err) {console.error(err.message);}
@@ -180,12 +175,7 @@ app.get("/Archive", (req, res) => {
     });
     res.render("Archive", {ImageArray: Images, LableArray: Lables});
   });
-});
 
-
-app.get("/comments", (req, res) => { 
-  DeleteTemp();
-  res.render("comments");
 });
 
 var orgiinalfilelength = 0;
@@ -204,15 +194,15 @@ app.post("/upload", upload.array("filetoupload") ,(req, res) => {
       localizeObjects(file);
     });
   
-    files.forEach((file) => {
-      safeSearchDetection(file)
-    });
+    // files.forEach((file) => {
+    //   safeSearchDetection(file)
+    // });
 
     files.forEach((file) => {
       labelDetection(file)
     });
 
-    res.render("upload");
+    res.render("Upload");
 });
 
 
@@ -347,7 +337,11 @@ async function safeSearchDetection(file) {
   console.log(`Violence: ${detections.violence}`);
   console.log(`Racy: ${detections.racy}`);
 
-  if(detections.adult == "VERY_LIKELY"){
+  if(detections.adult == "VERY_LIKELY" || detections.medical == "VERY_LIKELY" || detections.spoof == "VERY_LIKELY" || detections.violence == "VERY_LIKELY" || detections.racy == "VERY_LIKELY" ){
+    fs.unlinkSync(file.fileloc)
+    return;
+  }
+  if(detections.adult == "VERY_LIKELY" || detections.medical == "VERY_LIKELY" || detections.spoof == "VERY_LIKELY" || detections.violence == "VERY_LIKELY" || detections.racy == "VERY_LIKELY" ){
     fs.unlinkSync(file.fileloc)
     return;
   }
