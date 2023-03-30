@@ -113,11 +113,6 @@ app.get("/", (req, res) => {
     res.render("Homepage");
 });
 
-app.get("/Test", (req, res) => { 
-  DeleteTemp();
-  res.render("testpage");
-});
-
 app.get("/Clear", (req, res) => { 
   DeleteInfo();
   DeleteTemp();
@@ -190,9 +185,9 @@ app.post("/upload",upload.array("images"),(req, res) => {
   });
   
   
-    // files.forEach((file) => {
-    //   safeSearchDetection(file)
-    // });
+    files.forEach((file) => {
+      safeSearchDetection(file)
+    });
 
     files.forEach((file) => {
       localizeObjects(file);

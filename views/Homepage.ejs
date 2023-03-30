@@ -18,7 +18,7 @@
     </form>
 
     <div id="errorm" style="display: none;">
-        <p style="color: red;">You can only upload up to 10 images.</p>
+        <p style="color: red;">You can only upload up to 5 images.</p>
     </div>
     <br>
         <div class=" showdow-sm w-100">
@@ -42,12 +42,12 @@
         imagesArray.push(files[i])
         }
 
-        if (files.length > 0 && files.length <= 10) {
+        if (files.length > 0 && files.length <= 5) {
             Submit.style.display = 'inline-block';
         } else {
             Submit.style.display = 'none';
-            if (imagesArray.length <= 10) {
-                errorm.style.display = 'inline-block';
+            if (imagesArray.length > 5) {
+                errorm.style.display = 'block';
             }
         }
 
@@ -68,13 +68,13 @@
     function deleteImage(index) {
         imagesArray.splice(index, 1)
         displayImages()
-        if (imagesArray.length > 0 && imagesArray.length <= 10) {
+        if (imagesArray.length > 0 && imagesArray.length <= 5) {
             Submit.style.display = 'inline-block';
         }  
         else {
             Submit.style.display = 'none';
-            if (imagesArray.length <= 10) {
-                errorm.style.display = 'inline-block';
+            if (imagesArray.length > 5) {
+                errorm.style.display = 'block';
             }
         }
     }
