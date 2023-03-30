@@ -180,10 +180,9 @@ app.get("/upload",upload.array("images"),(req, res) => {
 
 app.post("/upload",upload.array("images"),(req, res) => {
   
-  var filessub = ReadTemp();
   var files = ReadTemp();
 
-  filessub.forEach((file) => {
+  files.forEach((file) => {
     Filter.render(file.fileloc, sobel, function (result) {
       var filname = "filter" + file.filename;
       result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
@@ -191,9 +190,9 @@ app.post("/upload",upload.array("images"),(req, res) => {
   });
   
   
-    files.forEach((file) => {
-      safeSearchDetection(file)
-    });
+    // files.forEach((file) => {
+    //   safeSearchDetection(file)
+    // });
 
     files.forEach((file) => {
       localizeObjects(file);
@@ -211,7 +210,7 @@ app.get("/Filter",(req, res) => {
   files.forEach((file) => {
     fname = file.filename;
     if (fname.includes("filter")){
-      labelDetection(file)
+      localizeObjects(file)
     }
   });
 
@@ -242,7 +241,10 @@ app.get("/Results", (req, res) => {
         const sobjectloc = './Temp/Box' + file.filename;
         const simageo = fs.readFileSync(sobjectloc);
         const simageBuffero = Buffer.from(simageo, "binary");
-        db.run("INSERT INTO Image (Image, ImageObject, ImageName) VALUES (?, ?, ?)",[simageBuffer,simageBuffero,file.filename],function (err) {
+        const fobjectloc = './Temp/Boxfilter' + file.filename;
+        const fimageo = fs.readFileSync(fobjectloc);
+        const fimageBuffero = Buffer.from(fimageo, "binary");
+        db.run("INSERT INTO Image (Image, ImageObject, ImageName, FilterObject) VALUES (?, ?, ?, ?)",[simageBuffer,simageBuffero,file.filename,fimageBuffero],function (err) {
           if (err){return console.log(err.message);}
         });  
       }
