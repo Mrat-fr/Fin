@@ -168,21 +168,21 @@ app.get("/Archive", (req, res) => {
 
 });
 
-app.get("/upload",upload.array("images"),(req, res) => {
-  res.render("Upload");
+// app.get("/upload",(req, res) => {
+//   res.render("Upload");
 
-});
+// });
 
-app.post("/upload",upload.array("images"),(req, res) => {
+app.post("/upload",upload.array("filetoupload"),(req, res) => {
   
   var files = ReadTemp();
 
-  files.forEach((file) => {
-    Filter.render(file.fileloc, sobel, function (result) {
-      var filname = "filter" + file.filename;
-      result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
+    files.forEach((file) => {
+      Filter.render(file.fileloc, sobel, function (result) {
+        var filname = "filter" + file.filename;
+        result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
+      });
     });
-  });
   
   
     files.forEach((file) => {
@@ -192,16 +192,17 @@ app.post("/upload",upload.array("images"),(req, res) => {
     files.forEach((file) => {
       localizeObjects(file);
     });
-  
 
     files.forEach((file) => {
       labelDetection(file)
     });
 
+    res.render("Upload");
 });
 
 app.get("/Filter",(req, res) => {
   var files = ReadTemp();
+
   files.forEach((file) => {
     fname = file.filename;
     if (fname.includes("filter")){
@@ -262,10 +263,7 @@ app.get("/Results", (req, res) => {
 //API------------------------------------------------------------------------------
 const vision = require("@google-cloud/vision");
 
-const client = new vision.ImageAnnotatorClient({
-  private_key: process.env.private_key,
-  client_email: process.env.client_email
- });
+const client = new vision.ImageAnnotatorClient({ keyFilename: "key.json" });
  
 async function localizeObjects(file) {
   const request = { image: { content: fs.readFileSync(file.fileloc) } };
@@ -346,20 +344,14 @@ async function safeSearchDetection(file) {
   const [result] = await client.safeSearchDetection(file.fileloc);
   const detections = result.safeSearchAnnotation;
 
-  console.log('Safe search:');
-  console.log(`Adult: ${detections.adult}`);
-  console.log(`Medical: ${detections.medical}`);
-  console.log(`Spoof: ${detections.spoof}`);
-  console.log(`Violence: ${detections.violence}`);
-  console.log(`Racy: ${detections.racy}`);
-
   if(detections.adult == "VERY_LIKELY" || detections.medical == "VERY_LIKELY" || detections.spoof == "VERY_LIKELY" || detections.violence == "VERY_LIKELY" || detections.racy == "VERY_LIKELY" ){
     fs.unlinkSync(file.fileloc)
+    console.log("bad")
     return;
   }
   if(detections.adult == "IKELY" || detections.medical == "IKELY" || detections.spoof == "IKELY" || detections.violence == "IKELY" || detections.racy == "IKELY" ){
     fs.unlinkSync(file.fileloc)
+    console.log("bad")
     return;
   }
 }
-

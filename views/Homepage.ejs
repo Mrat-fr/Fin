@@ -2,24 +2,22 @@
 
     <h2 >Upload Images</h2>
     <p>Upload images of animals</p>
+    <p id="errorm"style="color: red; display: none;">You can only upload up to 5 images.</p>
 
-    <form action="/upload">
+    <form action="/upload" method="post" enctype="multipart/form-data">
 
-        <label class="custom-file-upload">
-            <input id="fileinput" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg"/>
+        <label class="custom-file-upload" >
+            <input id="fileinput" name="filetoupload" type="file" multiple accept="image/jpeg, image/png, image/jpg"/>
             Select
         </label>
 
         <label class="custom-file-upload" id="uploadButton" style="display:none;">
-            <button onclick="uploadImages()"></button>
+            <button type="submit"></button>
             Submit
         </label>
 
     </form>
 
-    <div id="errorm" style="display: none;">
-        <p style="color: red;">You can only upload up to 5 images.</p>
-    </div>
     <br>
         <div class=" showdow-sm w-100">
             <output></output>
@@ -30,9 +28,9 @@
 <script>
     const output = document.querySelector("output")
     const input = document.querySelector("input")
-    const Submit = document.getElementById("uploadButton")
     const fileval = document.querySelector("fileinput")
-    const errorm = document.querySelector("errorm")
+    const Submit = document.getElementById("uploadButton")
+    const errorm = document.getElementById("errorm")
 
     
     let imagesArray = []
@@ -41,17 +39,19 @@
         for (let i = 0; i < files.length; i++) {
         imagesArray.push(files[i])
         }
+       
+        displayImages()
 
         if (files.length > 0 && files.length <= 5) {
             Submit.style.display = 'inline-block';
+            errorm.style.display = 'none';
         } else {
             Submit.style.display = 'none';
-            if (imagesArray.length > 5) {
+            if (files.length >= 5) {
                 errorm.style.display = 'block';
             }
         }
 
-        displayImages()
 
     })
    
@@ -70,22 +70,23 @@
         displayImages()
         if (imagesArray.length > 0 && imagesArray.length <= 5) {
             Submit.style.display = 'inline-block';
+            errorm.style.display = 'none';
         }  
         else {
             Submit.style.display = 'none';
-            if (imagesArray.length > 5) {
+            if (imagesArray.length >= 5) {
                 errorm.style.display = 'block';
             }
         }
     }
 
     function uploadImages() {
-    const formData = new FormData()
-    imagesArray.forEach(image => formData.append('images', image))
+        const formData = new FormData()
+        imagesArray.forEach(image => formData.append('images', image))
 
-    const xhr = new XMLHttpRequest()
-    xhr.open('POST', '/upload')
-    xhr.send(formData)
-  }
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', '/upload')
+        xhr.send(formData)
+     }
 </script>
 <%- include('Footer'); %>
