@@ -168,10 +168,6 @@ app.get("/Archive", (req, res) => {
 
 });
 
-// app.get("/upload",(req, res) => {
-//   res.render("Upload");
-
-// });
 
 app.post("/upload",upload.array("filetoupload"),(req, res) => {
   
