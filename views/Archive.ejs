@@ -2,13 +2,20 @@
 
 <h2 style="text-align: center">Archive</h2>
 
-<div id="image-container"  width="500" height="500"></div>
+<div class="image-container" id="image-container" ></div>
 
 <div id="myModal" class="modal">
     <div class="row">
         <div class="col-sm">
             <span class="close">&times;</span>
-            <img class="modal-content" id="img01">
+            <div class="change-photos">
+                <div class="change-photo">
+                    <img class="modal-content" id="img01">
+                </div>
+                <div class="change-photo">
+                    <img class=" modal-content" id="imghover">
+                </div>
+            </div>
         </div>
         <div class="col-sm">
             <div id="caption"></div>
@@ -21,6 +28,7 @@
     var modal = document.getElementById("myModal");
     var img = document.getElementById("myImg");
     var modalImg = document.getElementById("img01");
+    var hovermg = document.getElementById("imghover");
     var captionText = document.getElementById("caption");
 
     const container = document.getElementById("image-container");
@@ -32,12 +40,11 @@
 
     data.forEach((image) => {
 
-      
-
         const imgElement = document.createElement("img");
         imgElement.src = image.fileloc;
         imgElement.width = "500";
         imgElement.height = "500";
+        imgElement.padding = "500";
 
         imgElement.addEventListener("click", () => {
             var lables = [];
@@ -50,6 +57,7 @@
 
             modal.style.display = "block";
             modalImg.src = "./ArchiveImage/Box"+ image.filename;
+            hovermg.src = "./ArchiveImage/Boxfilter"+ image.filename;
             captionText.innerHTML = lables;
 
           

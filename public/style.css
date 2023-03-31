@@ -289,6 +289,8 @@ output .span--hidden{
 }
 
 /* archive */
+
+
 #myImg {
   border-radius: 5px;
   cursor: pointer;
@@ -301,7 +303,7 @@ output .span--hidden{
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 99; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -367,9 +369,29 @@ output .span--hidden{
   cursor: pointer;
 }
 
-/* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
   .modal-content {
       width: 100%;
   }
+}
+
+
+.change-photos .change-photo img {
+  object-fit: cover;
+}
+
+.change-photos .change-photo:nth-of-type(2) {
+  display: none;
+}
+
+.change-photos:hover .change-photo:nth-of-type(1) {
+  display: none;
+}
+
+.change-photos:hover .change-photo:nth-of-type(2) {
+  display: block;
+}
+
+.change-photos:hover {
+  cursor: pointer;
 }

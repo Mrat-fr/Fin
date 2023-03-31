@@ -2,16 +2,16 @@
 
     <h2 >Upload Images</h2>
     <p>Upload images of animals</p>
-    <p id="errorm"style="color: red; display: none;">You can only upload up to 5 images.</p>
+    <p id="errorm"style="color: red; display: none;">You can only upload up to 10 images.</p>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
 
         <label class="custom-file-upload" >
-            <input id="fileinput" name="filetoupload" type="file" multiple accept="image/jpeg, image/png, image/jpg"/>
+            <input id="fileinput" name="filetoupload" aria-describedby="inputGroupFileAddon04" type="file" multiple accept="image/jpeg, image/png, image/jpg"/>
             Select
         </label>
 
-        <label class="custom-file-upload" id="uploadButton" style="display:none;">
+        <label class="custom-file-upload" id="uploadButton" style="display: none;">
             <button type="submit"></button>
             Submit
         </label>
@@ -35,14 +35,16 @@
     
     let imagesArray = []
     input.addEventListener("change", () => {
+        imagesArray = []
         const files = input.files
+        console.log(files)
         for (let i = 0; i < files.length; i++) {
         imagesArray.push(files[i])
         }
        
         displayImages()
 
-        if (files.length > 0 && files.length <= 5) {
+        if (files.length > 0 && files.length <= 10) {
             Submit.style.display = 'inline-block';
             errorm.style.display = 'none';
         } else {
@@ -60,33 +62,33 @@
         imagesArray.forEach((image, index) => {
             images +=   `<div class="image" style="text-align:center;">
                         <img src="${URL.createObjectURL(image)}" alt="image">
-                        <span onclick="deleteImage(${index})">&times;</span>
                         </div>`
         })
         output.innerHTML = images
     }
-    function deleteImage(index) {
-        imagesArray.splice(index, 1)
-        displayImages()
-        if (imagesArray.length > 0 && imagesArray.length <= 5) {
-            Submit.style.display = 'inline-block';
-            errorm.style.display = 'none';
-        }  
-        else {
-            Submit.style.display = 'none';
-            if (imagesArray.length >= 5) {
-                errorm.style.display = 'block';
-            }
-        }
-    }
+    // function deleteImage(index) {
+    //     imagesArray.splice(index, 1)
+    //     displayImages()
+    //     if (imagesArray.length > 0 && imagesArray.length <= 5) {
+    //         Submit.style.display = 'inline-block';
+    //         errorm.style.display = 'none';
+    //     }  
+    //     else {
+    //         Submit.style.display = 'none';
+    //         if (imagesArray.length >= 5) {
+    //             errorm.style.display = 'block';
+    //         }
+    //     }
+    // }
 
-    function uploadImages() {
-        const formData = new FormData()
-        imagesArray.forEach(image => formData.append('images', image))
+    // function uploadImages() {
+    //     const formData = new FormData()
+    //     imagesArray.forEach(image => formData.append('images[]', image))
 
-        const xhr = new XMLHttpRequest()
-        xhr.open('POST', '/upload')
-        xhr.send(formData)
-     }
+    //     const xhr = new XMLHttpRequest()
+    //     xhr.open('POST', '/upload')
+    //     xhr.send(formData)
+    // }
+
 </script>
 <%- include('Footer'); %>

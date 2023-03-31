@@ -143,6 +143,10 @@ app.get("/Archive", (req, res) => {
       fs.writeFileSync("ArchiveImage/Box" + row.ImageName, row.ImageObject,"binary",(err) => {
         if (err) {console.error(err.message);}
       });
+
+      fs.writeFileSync("ArchiveImage/Boxfilter" + row.ImageName, row.FilterObject,"binary",(err) => {
+        if (err) {console.error(err.message);}
+      });
     });
   });
 
@@ -172,32 +176,34 @@ app.get("/Archive", (req, res) => {
 app.post("/upload",upload.array("filetoupload"),(req, res) => {
   
   var files = ReadTemp();
-
-    files.forEach((file) => {
-      Filter.render(file.fileloc, sobel, function (result) {
-        var filname = "filter" + file.filename;
-        result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
-      });
-    });
   
+  files.forEach((file) => {
+    localizeObjects(file);
+  });
   
-    files.forEach((file) => {
-      safeSearchDetection(file)
+  files.forEach((file) => {
+    Filter.render(file.fileloc, sobel, function (result) {
+      var filname = "filter" + file.filename;
+      result.data.pipe(fs.createWriteStream(`./Temp/${filname}`));
     });
-
-    files.forEach((file) => {
-      localizeObjects(file);
-    });
-
-    files.forEach((file) => {
-      labelDetection(file)
-    });
-
+  });
+  
     res.render("Upload");
 });
 
 app.get("/Filter",(req, res) => {
   var files = ReadTemp();
+
+  files.forEach((file) => {
+    fname = file.filename;
+    if (!fname.includes("Box")){
+      if (!fname.includes("filter")){
+        safeSearchDetection(file)
+        labelDetection(file)
+
+      }
+    }
+  });
 
   files.forEach((file) => {
     fname = file.filename;
@@ -207,6 +213,13 @@ app.get("/Filter",(req, res) => {
   });
 
   res.render("Filter");
+
+});
+
+app.get("/Test",(req, res) => {
+  DeleteTemp();
+
+  res.render("Testpage");
 
 });
 
@@ -221,8 +234,9 @@ app.get("/Results", (req, res) => {
         showfiles.push(file)
       }
     }
-  });
+    });
   
+
   files.forEach((file) => {
     bname = "Box" + file.filename;
     fname = file.filename;
@@ -285,10 +299,13 @@ async function localizeObjects(file) {
     
   });
 
-  found = objectlable.some((r) => Animals.indexOf(r) >= 0);
-  if (found === false) {
-    fs.unlinkSync(file.fileloc)
-    return;
+  var fname = file.filename;
+  if (!fname.includes("filter")){
+    found = objectlable.some((r) => Animals.indexOf(r) >= 0);
+    if (found === false) {
+      fs.unlinkSync(file.fileloc)
+      return;
+    }
   }
 
   loadImage(file.fileloc).then((image) => {
@@ -342,12 +359,12 @@ async function safeSearchDetection(file) {
 
   if(detections.adult == "VERY_LIKELY" || detections.medical == "VERY_LIKELY" || detections.spoof == "VERY_LIKELY" || detections.violence == "VERY_LIKELY" || detections.racy == "VERY_LIKELY" ){
     fs.unlinkSync(file.fileloc)
-    console.log("bad")
+    console.log("bad_really"+file.filename)
     return;
   }
   if(detections.adult == "IKELY" || detections.medical == "IKELY" || detections.spoof == "IKELY" || detections.violence == "IKELY" || detections.racy == "IKELY" ){
     fs.unlinkSync(file.fileloc)
-    console.log("bad")
+    console.log("bad"+file.filename)
     return;
   }
 }
