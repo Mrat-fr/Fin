@@ -1,12 +1,219 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+
 <%- include('Header'); %>
 
 <h2 style="text-align: center">Results</h2>
 
-<% for (let i = 0; i < images.length; i++) { %>
-    <div class="tc-container">
-        <img class="" width="500" height="500" src="./Temp/<%= images[i].filename %>" alt="image"/>
-        <img class="" width="500" height="500" src="./Temp/Box<%= images[i].filename %>" alt="boxresult"/>
-    </div>
-<% } %>
+<div class="res-container">
+    <section class="wrapper">
+
+        <i class="fa-solid fa-arrow-left button" id="prev"></i>
+
+        <div class="image-container">
+            <div class="carousel">
+                <% for (let i = 0; i < images.length; i++) { %>
+                    <img class="gallery-item" src="./Temp/Box<%= images[i].filename %>" alt="boxresult"/>
+                <% } %>
+            </div>
+        </div>
+
+        <i class="fa-solid fa-arrow-right button" id="next"></i>
+
+    </section>
+</div>
+
+
+<script>
+    // Get the DOM elements for the image carousel
+    const wrapper = document.querySelector(".wrapper"),
+    carousel = document.querySelector(".carousel"),
+    images = document.querySelectorAll("img"),
+    buttons = document.querySelectorAll(".button");
+
+    let imageIndex = 1,
+    intervalId;
+
+    // updates the carousel display to show the specified image
+    const slideImage = () => {
+    // Calculate the updated image index
+    imageIndex = imageIndex === images.length ? 0 : imageIndex < 0 ? images.length - 1 : imageIndex;
+    // Update the carousel display to show the specified image
+    carousel.style.transform = `translate(-${imageIndex * 100}%)`;
+    };
+
+    // updates the carousel to show the next or previous image
+    const updateClick = (e) => {
+
+    // Calculate the updated image index based on the button clicked
+    imageIndex += e.target.id === "next" ? 1 : -1;
+    slideImage(imageIndex);
+    };
+
+    buttons.forEach((button) => button.addEventListener("click", updateClick));
+
+  //hover feature
+  //getting all the images in carousel
+  const carouselImages = document.querySelectorAll(".gallery-item");
+
+//   const images = [];  
+    for (let i = 0; i < images.length; i++) {
+    const img = document.createElement("img");
+    img.classList.add("gallery-item");
+    img.setAttribute("src", `./Temp/Boxfilter${images[i].filename}`);
+    img.setAttribute("alt", "boxresult");
+    img.style.height="200px";
+    img.style.width ="200px";
+    5
+    document.body.appendChild(img);
+    }
+
+
+  //adding mouseover and mouseout event list
+  carouselImages.forEach((image,i) => {
+    const originalSrc = image.src;
+   // const newSrc = "./Temp/Boxfilter<%=images.filename%>"; // Replace with the path to the new image
+   const newSrc = `./Temp/Boxfilter${images[i].filename}`;
+   //getting the box filter image
+
+    image.addEventListener("mouseover", () => {
+       image.src = newSrc;
+    });
+
+    image.addEventListener("mouseout", () => {
+        image.src = originalSrc;
+    });
+  });
+    
+</script>
+
+<style>
+    .res-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 80px;
+    }
+
+     /* Small devices (portrait tablets and large phones) */
+     @media only screen and (max-width: 768px) {
+    
+     .res-container{
+       /* font-size: 14px;
+       margin: 10px;
+       padding: 10px; */
+
+       display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 80px;
+        width: 400px;
+     }
+    }
+
+    /* Medium devices (landscape tablets and small laptops) */
+    @media only screen and (min-width: 768px) and (max-width: 992px) {
+
+      .res-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 80px;
+        margin-right: 1000px;
+      }
+    }
+
+    /* Large devices (desktops and large laptops) */
+    @media only screen and (min-width: 992px) {
+     .res-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 80px;
+        margin-right: 1000px;
+      }
+    }
+   .gallery-item{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        height: 500px;
+        width: 500px;
+        margin: auto;
+        margin-right: 120px;
+        margin-left: 150px;
+    }
+
+
+    @media only screen and (max-width: 768px) {
+        .gallery-item {
+            margin-bottom: 20px;
+            display: block;
+            width: 200px;
+            height: 300px;
+            margin-left: 130px;
+        }
+    }
+
+     .wrapper {
+        display: flex;
+        max-width: 650px;
+        width: 100%;
+        height: 400px;
+        background: #ffffff00;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border-radius: 12px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+     }
+    .wrapper i.button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 36px;
+        width: 36px;
+        background-color: #343f4f;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 36px;
+        color: #fff;
+        font-size: 15px;
+        transition: all 0.3s linear;
+        z-index: 100;
+        cursor: pointer;
+        }
+    i.button:active {
+        transform: scale(0.94) translateY(-50%);
+    }
+    i#prev {
+        left: 50px;
+    }
+    i#next {
+        right: 10px;
+    }
+    .image-container {
+        height: 320px;
+        max-width: 500px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .image-container .carousel {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        transition: all 0.4s ease;
+    }
+    .carousel img {
+        height: 100%;
+        width: 100%;
+        border-radius: 18px;
+        border: 10px solid #fff;
+        object-fit: cover;
+    }
+
+
+</style>
 
 <%- include('Footer'); %>
