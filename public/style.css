@@ -314,6 +314,7 @@ output .span--hidden{
 
 /* Modal Content (image) */
 .modal-content {
+  margin-top: 35px;
   margin: auto;
   display: block;
   width: 80%;
@@ -330,6 +331,12 @@ output .span--hidden{
   color: #ccc;
   padding: 10px 0;
   height: 150px;
+}
+
+.image-container img{
+  border: 5px solid white;
+  border-radius: 18px;
+  margin: 10px;
 }
 
 /* Add Animation */
